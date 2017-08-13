@@ -1,9 +1,12 @@
 class UsersController < ApplicationController
+  before_action :authenticate_user, only: :show
+  before_action :find_user, only: [:show, :destroy]
 
   def show
-    @user = User.find(params[:id])
-    if @user && current_user == @user
+   if @user && current_user == @user
       render :show
+    else
+      render json: { "error":"Unauthorized" }, status: 422
     end
   end
 
@@ -17,15 +20,18 @@ class UsersController < ApplicationController
   end
 
   def destory
-    @user = User.find(params[:id])
     if @user && @user.destroy
       render status: 200
     else
-      render json: { :error => @user.errors }, status: 422
+      render :errors, status: 422
     end
   end
 
   private
+
+  def find_user
+    @user = User.find(params[:id])
+  end
 
   def user_params
     params.require(:user).permit(:name, :email, :password)
