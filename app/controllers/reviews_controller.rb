@@ -1,13 +1,6 @@
 class ReviewsController < ApplicationController
   before_action :find_review, only: %i[show destroy]
 
-  def index
-    @reviews = Review.all
-  end
-
-  def show
-  end
-
   def create
     @review = Review.new(review_params)
     if @review.save
@@ -32,6 +25,6 @@ class ReviewsController < ApplicationController
   end
 
   def review_params
-    params.require(:review).permit(:brand, :model, :review_type, :upper)
+    params.require(:review).permit(:user_id, :boot_id, :body, :rating)
   end
 end
